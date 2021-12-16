@@ -4,6 +4,7 @@ import com.br.portes.stockmanagement.dto.ProductControlDTO;
 import com.br.portes.stockmanagement.exception.MyException;
 import com.br.portes.stockmanagement.model.entity.ProductControl;
 import com.br.portes.stockmanagement.model.repository.ControlRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -15,20 +16,18 @@ import java.util.Objects;
 public class ControlServiceImpl implements ControlService {
 
     private final ControlRepository repository;
-    private final ProductControlDTO dto;
 
-    public ControlServiceImpl(ControlRepository repository, ProductControlDTO dto) {
+    @Autowired
+    public ControlServiceImpl(ControlRepository repository) {
         this.repository = repository;
-        this.dto = dto;
     }
 
     @Override
     public ProductControl registerProduct(ProductControl productControl) {
         productAlreadyExists(productControl);
-
         return repository.save(productControl);
-
     }
+
     @Override
     public List<ProductControl> searchProduct(ProductControl filter) {
         Example<ProductControl> example =  Example.of(filter, ExampleMatcher.matching()

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,14 +31,19 @@ public class ProductControlController {
 
     @PostMapping("/create-product")
     @Transactional
-    public ResponseEntity<ProductControl> createProductControl(@RequestBody ProductControlDTO dto) {
-        ProductControl productConverted = productControlConverterDTO.converterDTO(dto);
-        ProductControl savedProduct = service.registerProduct(productConverted);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    public ResponseEntity createProductControl(@RequestBody ProductControlDTO dto) {
+        try {
+            ProductControl productConverted = productControlConverterDTO.converterDTO(dto);
+            ProductControl savedProduct = service.registerProduct(productConverted);
+            return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+        } catch (MyException ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+
     }
 
     @PostMapping("update-product-control")
-    public ResponseEntity<ProductControl> updateProductControl(@RequestBody ProductControlDTO dto) {
+    public ResponseEntity updateProductControl(@RequestBody ProductControlDTO dto) {
         ProductControl productConverted = productControlConverterDTO.converterDTO(dto);
         try {
             ProductControl savedProduct = service.updateProductControl(productConverted);
@@ -88,7 +94,7 @@ public class ProductControlController {
     }
 
     @GetMapping("find-all")
-    public List<ProductControl> findAll(){
+    public List<ProductControl> findAll() {
         return service.findAll();
     }
 

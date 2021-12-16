@@ -2,16 +2,12 @@ import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Rotas from "./routes";
 import Menu from "../components/Menu";
-import { ListaDeProdutos } from "../components/ListaDeProdutos";
-import { makeStyles } from "@mui/styles";
+import ListaDeProdutos from "../components/ListaProdutos";
 import Typography from "@mui/material/Typography";
 import "@fontsource/roboto/300.css";
 
-const useStyles = makeStyles({
-  teste: {
-    padding: '20px'
-  },
-});
+import 'toastr/build/toastr.min.js'
+import 'toastr/build/toastr.css'
 
 function App() {
   const theme = createTheme({
@@ -24,15 +20,13 @@ function App() {
       },
     },
   });
-  const classes = useStyles();
+
   return (
     <ThemeProvider theme={theme}>
       <Menu />
-      <div className={classes.teste}>
-        <Typography align="center" variant="h5" color='primary'>
-          Stock Product Control
-        </Typography>
-        <ListaDeProdutos />
+      <div>
+        <Typography align="center" variant="h5" color="primary"></Typography>
+        <ListaDeProdutos /> 
       </div>
       <Rotas />
     </ThemeProvider>

@@ -2,11 +2,11 @@ package com.br.portes.stockmanagement.service.control.converter;
 
 import com.br.portes.stockmanagement.dto.ProductControlDTO;
 import com.br.portes.stockmanagement.model.entity.ProductControl;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-@Component
+@Service
 public class ProductControlConverterDTO {
 
 

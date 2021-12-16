@@ -1,8 +1,10 @@
-import React from "react";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
+import Button from "@mui/material/Button";
+import {mensagemErro, mensagemSucesso} from './toast'
 
 export class ListaDeProdutos extends React.Component {
   state = {
@@ -11,13 +13,15 @@ export class ListaDeProdutos extends React.Component {
     barcode: null,
     currentQuantity: null,
     minAlert: null,
+    errorMsg: null,
+    statusResponse: null,
   };
 
 
 
   cadastrar = () => {
     axios
-      .post("http://localhost:8080/api/product-control/create-product", {
+      .post("https://stock-management-aportes.herokuapp.com/api/product-control/create-product", {
         description: this.state.description,
         brand: this.state.brand,
         barcode: this.state.barcode,
@@ -25,25 +29,42 @@ export class ListaDeProdutos extends React.Component {
         minAlert: this.state.minAlert,
       })
       .then((response) => {
-        console.log(response);
+        this.setState({ statusResponse: response.status });
+        console.log("Status quando OK: ", response.status);
+        mensagemSucesso()
       })
       .catch((erro) => {
-        console.log(erro.response);
+        this.setState({
+          errorMsg: erro.response.data,
+          statusResponse: erro.response.status,
+        });
+        mensagemErro(erro.response.data)
+        console.log(erro.response.data)
       });
   };
-
-  limparCampos = () => {
-    this.setState({description: null, brand: null})
-    }
 
   render() {
     return (
       <>
         <div>
+          <Typography
+            align="center"
+            variant="h5"
+            color="primary"
+            sx={{ padding: "10px" }}
+          >
+            {" "}
+            Stock Product Managemnet{" "}
+          </Typography>
           <Box
             component="form"
             sx={{
-              "& .MuiTextField-root": { m: 1, width: "80vw" },
+              "& .MuiTextField-root": {
+                m: 1,
+                display: "flex",
+                marginLeft: "5%",
+                marginRight: "5%",
+              },
             }}
             noValidate
             autoComplete="off"
@@ -52,6 +73,7 @@ export class ListaDeProdutos extends React.Component {
               id="outlined-basic"
               label="Description"
               variant="outlined"
+              required="true"
               value={this.state.description}
               onChange={(e) => this.setState({ description: e.target.value })}
             />
@@ -60,6 +82,7 @@ export class ListaDeProdutos extends React.Component {
               id="outlined-basic"
               label="Brand"
               variant="outlined"
+              required="true"
               value={this.state.brand}
               onChange={(e) => this.setState({ brand: e.target.value })}
             />
@@ -89,17 +112,17 @@ export class ListaDeProdutos extends React.Component {
               value={this.state.minAlert}
               onChange={(e) => this.setState({ minAlert: e.target.value })}
             />
-
+            <Box sx={{ mx: "auto", textAlign: "center" }}>
+              <Button
+                variant="contained"
+                onClick={this.cadastrar}
+                sx={{ width: "90%" }}
+              >
+                Save product
+              </Button>
+            </Box>
           </Box>
         </div>
-
-        <Button
-          variant="contained"
-          sx={{ alignContent: "rigth" }}
-          onClick={(this.cadastrar)}
-        >
-          Salvar Produto
-        </Button>
       </>
     );
   }
